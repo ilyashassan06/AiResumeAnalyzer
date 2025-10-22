@@ -1,8 +1,8 @@
 // src/App.jsx
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import Signup from "./pages/Signup";
-import Login from "./pages/Login";
+import Signup from "./Pages/Signup";
+import Login from "./Pages/Login";
 
 import { AuthProvider, useAuth } from "./Context/AuthContext";
 import ProtectedRoute from "./Components/ProtectedRoute";
