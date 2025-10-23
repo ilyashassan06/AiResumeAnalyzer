@@ -179,7 +179,7 @@ Return only a valid JSON response (no extra commentary).
   {/* Logout Button */}
   <button
     onClick={handleLogout}
-    className="fixed top-6 right-6 z-50 
+    className="fixed bottom-6 right-6 z-50 
                bg-gradient-to-r from-amber-500 to-amber-700 
                text-white font-semibold 
                px-5 py-2 rounded-2xl text-lg 

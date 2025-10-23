@@ -41,7 +41,7 @@ function Login() {
 
 
   return (
-    <div className="flex justify-center flex-col gap-6 items-center min-h-screen   text-white px-4">
+    <div className="flex justify-start flex-col mt-10 gap-6 items-center min-h-screen   text-white px-4">
       {/* Page Title */}
       <h1 className="text-5xl w-full text-center sm:text-6xl text-black font-extrabold drop-shadow-md">
         AI Resume Analyzer

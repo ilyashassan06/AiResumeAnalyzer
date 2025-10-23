@@ -55,9 +55,9 @@ navigate("/home");
  
 
   return (
-     <div className="flex justify-center flex-col gap-6 items-center min-h-screen   text-white px-4">
+     <div className="flex justify-start mt-10 flex-col gap-6 items-center min-h-screen   text-white px-4">
       {/* Page Title */}
-      <h1 className="text-5xl text-center text-black sm:text-6xl font-extrabold drop-shadow-md">
+      <h1 className="text-5xl text-center text-black md:text-6xl font-extrabold drop-shadow-md">
         AI Resume Analyzer
       </h1>
 

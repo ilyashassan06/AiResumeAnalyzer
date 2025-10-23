@@ -14,7 +14,7 @@ function App() {
 
   return (
    
-      <div className="w-full flex justify-center items-center min-h-screen bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-100
+      <div className="w-full flex justify-center  min-h-screen bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-100
 ">
         <Routes>
         {/* Default route "/" redirects based on login */}
