@@ -9,7 +9,7 @@ function Home() {
   if (loadingUserData) return <p>Loading user data...</p>;
 
   return (
-    <div className="md:w-[400px] md:h-[600px] border-2 rounded-2xl overflow-hidden">
+    <div className="h-auto  bg-gray-50 rounded-3xl shadow-xl overflow-hidden p-2 md:p-0 ">
       {/* {userData ? (
         <h2>Welcome, {userData.username}</h2> // ✅ safely render
       ) : (

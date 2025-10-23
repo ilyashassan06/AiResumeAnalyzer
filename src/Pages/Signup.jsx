@@ -55,11 +55,18 @@ navigate("/home");
  
 
   return (
-    <div className="flex justify-center flex-col gap-6 items-center min-h-screen ">
-      <h1 className="text-6xl text-white">AI Resume Analyzer</h1>
+     <div className="flex justify-center flex-col gap-6 items-center min-h-screen   text-white px-4">
+      {/* Page Title */}
+      <h1 className="text-5xl text-center text-black sm:text-6xl font-extrabold drop-shadow-md">
+        AI Resume Analyzer
+      </h1>
+
+      {/* Sign Up Form */}
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="bg-white/10 backdrop-blur-md border border-white/20 p-8 rounded-3xl shadow-2xl w-[90%] sm:w-[400px]"
+        className="bg-gradient-to-br from-gray-900 via-indigo-900 to-purple-800
+
+ backdrop-blur-md border border-white/20 p-8 rounded-3xl shadow-2xl w-full max-w-md"
       >
         <h2 className="text-3xl font-bold text-center text-white mb-8 tracking-wide">
           Create Your Account
@@ -67,7 +74,7 @@ navigate("/home");
 
         {/* Username */}
         <div className="mb-5">
-          <label className="block text-sm font-medium text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-white  mb-2">
             Username
           </label>
           <input
@@ -80,8 +87,8 @@ navigate("/home");
               },
             })}
             placeholder="e.g. JohnDoe"
-              autoComplete="username"
-            className="w-full px-4 py-3 rounded-xl bg-white/5 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
+            autoComplete="username"
+            className="w-full px-4 py-3 rounded-xl bg-white/10 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all duration-200"
           />
           {errors.username && (
             <p className="text-red-400 text-sm mt-2">
@@ -92,7 +99,7 @@ navigate("/home");
 
         {/* Email */}
         <div className="mb-5">
-          <label className="block text-sm font-medium text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-white  mb-2">
             Email
           </label>
           <input
@@ -105,8 +112,8 @@ navigate("/home");
               },
             })}
             placeholder="example@mail.com"
-            autoComplete="email" // ✅ Add this
-            className="w-full px-4 py-3 rounded-xl bg-white/5 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
+            autoComplete="email"
+            className="w-full px-4 py-3 rounded-xl bg-white/10 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all duration-200"
           />
           {errors.email && (
             <p className="text-red-400 text-sm mt-2">
@@ -117,7 +124,7 @@ navigate("/home");
 
         {/* Password */}
         <div className="mb-7">
-          <label className="block text-sm font-medium text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-white  mb-2">
             Password
           </label>
           <input
@@ -136,7 +143,7 @@ navigate("/home");
             })}
             placeholder="••••••••"
             autoComplete="new-password"
-            className="w-full px-4 py-3 rounded-xl bg-white/5 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
+            className="w-full px-4 py-3 rounded-xl bg-white/10 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all duration-200"
           />
           {errors.password && (
             <p className="text-red-400 text-sm mt-2">
@@ -149,19 +156,19 @@ navigate("/home");
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl transition-all duration-200 shadow-lg hover:shadow-indigo-500/30"
+          className="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-amber-500/30 transition-all duration-300"
         >
           {isSubmitting ? "Creating..." : "Sign Up"}
         </button>
 
         {/* OR Divider */}
         <div className="flex items-center my-6">
-          <div className="flex-1 h-px bg-gray-600"></div>
-          <span className="px-3 text-gray-400 text-sm">or</span>
-          <div className="flex-1 h-px bg-gray-600"></div>
+          <div className="flex-1 h-px bg-white/30"></div>
+          <span className="px-3 text-gray-200 text-sm">or</span>
+          <div className="flex-1 h-px bg-white/30"></div>
         </div>
 
-        {/* Google Signup /// under bug fix */}
+        {/* Google Signup (optional) */}
         {/* <button
           type="button"
           onClick={handleGoogleSignup}
@@ -176,15 +183,14 @@ navigate("/home");
         </button> */}
 
         {/* Footer */}
-        <p className="text-gray-400 text-center mt-6 text-sm">
+        <p className="text-gray-200 text-center mt-6 text-sm">
           Already have an account?{" "}
           <Link
-  to="/login"
-  className="text-indigo-400 hover:text-indigo-300 transition-all"
->
-  Login here
-</Link>
-
+            to="/login"
+            className="text-amber-300 hover:text-amber-200 transition-all"
+          >
+            Login here
+          </Link>
         </p>
       </form>
     </div>

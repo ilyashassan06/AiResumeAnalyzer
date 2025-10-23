@@ -5,15 +5,16 @@ import App from './App.jsx'
 import { BrowserRouter } from 'react-router-dom'
 import { AuthProvider } from './Context/AuthContext.jsx'
 import { UserDataProvider } from './Context/UserDataContext.jsx'
+import { AiProvider } from './Context/AiResult.jsx'
 
 createRoot(document.getElementById('root')).render(
-  <BrowserRouter>
-  
+ <BrowserRouter>
     <AuthProvider>
-      < UserDataProvider>
-      <App />
-    
-    </UserDataProvider>
+      <UserDataProvider>
+        <AiProvider>   {/* ✅ wrap here */}
+          <App />
+        </AiProvider>
+      </UserDataProvider>
     </AuthProvider>
   </BrowserRouter>
 )

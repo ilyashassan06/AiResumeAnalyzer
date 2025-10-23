@@ -41,11 +41,17 @@ function Login() {
 
 
   return (
-    <div className="flex justify-center flex-col gap-6 items-center min-h-screen s">
-      <h1 className="text-6xl text-white">AI Resume Analyzer</h1>
+    <div className="flex justify-center flex-col gap-6 items-center min-h-screen   text-white px-4">
+      {/* Page Title */}
+      <h1 className="text-5xl w-full text-center sm:text-6xl text-black font-extrabold drop-shadow-md">
+        AI Resume Analyzer
+      </h1>
+
+      {/* Login Form */}
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="bg-white/10 backdrop-blur-md border border-white/20 p-8 rounded-3xl shadow-2xl w-[90%] sm:w-[400px]"
+        className="bg-gradient-to-br from-gray-900 via-indigo-900 to-purple-800
+ backdrop-blur-md border border-white/20 p-8 rounded-3xl shadow-2xl w-full max-w-md"
       >
         <h2 className="text-3xl font-bold text-center text-white mb-8 tracking-wide">
           Welcome Back 👋
@@ -53,7 +59,7 @@ function Login() {
 
         {/* Email */}
         <div className="mb-5">
-          <label className="block text-sm font-medium text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-white mb-2">
             Email
           </label>
           <input
@@ -66,8 +72,8 @@ function Login() {
               },
             })}
             placeholder="example@mail.com"
-            autoComplete="email" // ✅ Add this
-            className="w-full px-4 py-3 rounded-xl bg-white/5 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
+            autoComplete="email"
+            className="w-full px-4 py-3 rounded-xl bg-white/10 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all duration-200"
           />
           {errors.email && (
             <p className="text-red-400 text-sm mt-2">
@@ -78,7 +84,7 @@ function Login() {
 
         {/* Password */}
         <div className="mb-7">
-          <label className="block text-sm font-medium text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-white  mb-2">
             Password
           </label>
           <input
@@ -91,8 +97,8 @@ function Login() {
               },
             })}
             placeholder="••••••••"
-             autoComplete="current-password"
-            className="w-full px-4 py-3 rounded-xl bg-white/5 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
+            autoComplete="current-password"
+            className="w-full px-4 py-3 rounded-xl bg-white/10 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all duration-200"
           />
           {errors.password && (
             <p className="text-red-400 text-sm mt-2">
@@ -105,16 +111,23 @@ function Login() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl transition-all duration-200 shadow-lg hover:shadow-indigo-500/30"
+          className="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-amber-500/30 transition-all duration-300"
         >
           {isSubmitting ? "Logging in..." : "Login"}
         </button>
 
-        {/* Google Login --- under bug fix */}
+        {/* OR Divider */}
+        {/* <div className="flex items-center my-6">
+          <div className="flex-1 h-px bg-white/30"></div>
+          <span className="px-3 text-gray-200 text-sm">or</span>
+          <div className="flex-1 h-px bg-white/30"></div>
+        </div> */}
+
+        {/* Google Login (optional) */}
         {/* <button
           type="button"
           onClick={handleGoogleLogin}
-          className="w-full mt-4 bg-white/90 text-gray-800 font-semibold py-3 rounded-xl hover:bg-white transition-all duration-200 flex items-center justify-center gap-2 shadow-md"
+          className="w-full mt-4 bg-white text-gray-800 font-semibold py-3 rounded-xl flex justify-center items-center gap-3 hover:bg-gray-200 transition-all duration-200"
         >
           <img
             src="https://www.svgrepo.com/show/475656/google-color.svg"
@@ -125,14 +138,14 @@ function Login() {
         </button> */}
 
         {/* Footer */}
-        <p className="text-gray-400 text-center mt-6 text-sm">
+        <p className="text-gray-200 text-center mt-6 text-sm">
           Don’t have an account?{" "}
-         <Link
-  to="/Signup"
-  className="text-indigo-400 hover:text-indigo-300 transition-all"
->
- Signup
-</Link>
+          <Link
+            to="/Signup"
+            className="text-amber-300 hover:text-amber-200 transition-all"
+          >
+            Signup
+          </Link>
         </p>
       </form>
     </div>
