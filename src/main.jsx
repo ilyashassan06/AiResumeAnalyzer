@@ -6,9 +6,11 @@ import { BrowserRouter } from 'react-router-dom'
 import { AuthProvider } from './Context/AuthContext.jsx'
 import { UserDataProvider } from './Context/UserDataContext.jsx'
 import { AiProvider } from './Context/AiResult.jsx'
+import { ThemeProvider } from './Context/ThemeContext.jsx'
 
 createRoot(document.getElementById('root')).render(
  <BrowserRouter>
+ <ThemeProvider>
     <AuthProvider>
       <UserDataProvider>
         <AiProvider>   {/* ✅ wrap here */}
@@ -16,5 +18,6 @@ createRoot(document.getElementById('root')).render(
         </AiProvider>
       </UserDataProvider>
     </AuthProvider>
+    </ThemeProvider>
   </BrowserRouter>
 )
