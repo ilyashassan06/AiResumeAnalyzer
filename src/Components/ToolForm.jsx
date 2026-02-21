@@ -99,9 +99,13 @@ Return valid JSON only:
 }`;
 
     try {
-      const response = await axios.post("/api/analyze", {
-  prompt: prompt,
-});
+      const response = await axios({
+        url: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyBuIwyD8rIPpboSPECU3XUVzEHlUejAfJ8",
+        method: "POST",
+        data: {
+          contents: [{ parts: [{ text: prompt }] }],
+        },
+      });
 
       const text =
         response?.data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
