@@ -51,7 +51,8 @@ const ToolForm = () => {
 
     reader.readAsArrayBuffer(file);
   };
-
+const MAX_CHARS = 1200; // safe
+const trimmedResume = resumeText.slice(0, MAX_CHARS);
   /** -----------------------
    * LOGOUT HANDLER
    * ------------------------*/
@@ -84,7 +85,7 @@ Job Description:
 ${jobDescription}
 
 Resume:
-${resumeText}
+${trimmedResume}
 
 ---
 
@@ -99,7 +100,7 @@ Return valid JSON only:
 
     try {
       const response = await axios({
-        url: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyC_GXyfTSkb_ejsrKGfE3nPJ_YJN0cVwWk",
+        url: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyBuIwyD8rIPpboSPECU3XUVzEHlUejAfJ8",
         method: "POST",
         data: {
           contents: [{ parts: [{ text: prompt }] }],
@@ -214,6 +215,7 @@ Return valid JSON only:
         {/* Submit Button */}
         <button
           type="submit"
+          disabled={loading}
           className={`w-full font-semibold py-3 rounded-2xl shadow-md transition-all duration-300 ${
             theme === "light"
               ? "bg-amber-600 hover:bg-amber-700 text-white"

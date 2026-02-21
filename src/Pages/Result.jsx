@@ -69,7 +69,7 @@ function Result() {
             >
               <div className="text-sm font-medium text-gray-500">ATS Score</div>
               <div className="text-xl font-extrabold">
-                {parsedData?.ats_score ?? "N/A"}%
+                {parsedData?.ats_score ?? "N/A"}
               </div>
             </div>
           </div>
