@@ -51,7 +51,7 @@ const ToolForm = () => {
 
     reader.readAsArrayBuffer(file);
   };
-const MAX_CHARS = 1200; // safe
+const MAX_CHARS = 12000; // safe
 const trimmedResume = resumeText.slice(0, MAX_CHARS);
   /** -----------------------
    * LOGOUT HANDLER
