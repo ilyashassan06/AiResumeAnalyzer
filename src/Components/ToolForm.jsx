@@ -100,7 +100,7 @@ Return valid JSON only:
 
     try {
       const response = await axios({
-        url: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyBuIwyD8rIPpboSPECU3XUVzEHlUejAfJ8",
+        url: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyAMzCnJwQ6cDU7wGWXjRPfaDH2hnJDQTiM",
         method: "POST",
         data: {
           contents: [{ parts: [{ text: prompt }] }],
