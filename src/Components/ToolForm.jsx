@@ -137,15 +137,18 @@ Return valid JSON only:
 
 
 
-try {
-  const result = await puter.ai.chat(prompt);
-
-const aiText =
-  typeof result === "string"
-    ? result
-    : result?.message?.content;
+  try {
+    const response = await fetch("http://localhost:5000/analyze", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ prompt })
+    });
     
+  const data = await response.json();   // 🔥 THIS WAS MISSING
 
+  const aiText = data.result;      
 setAiData(aiText);     // 🔥 THIS WAS MISSING
   navigate("/Result");
 
