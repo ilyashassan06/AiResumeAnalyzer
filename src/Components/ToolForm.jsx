@@ -138,7 +138,7 @@ Return valid JSON only:
 
 
 try {
-  const result = await window.puter.ai.chat(prompt);
+  const result = await puter.ai.chat(prompt);
 
 const aiText =
   typeof result === "string"
