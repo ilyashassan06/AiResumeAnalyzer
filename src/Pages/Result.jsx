@@ -8,6 +8,7 @@ function Result() {
   const navigate = useNavigate();
   const { theme } = useTheme();
 
+
   // Clean the AI text before parsing
   let parsedData = null;
 
@@ -18,22 +19,42 @@ function Result() {
       .trim();
 
     try {
-      parsedData = JSON.parse(cleanJsonString);
+      parsedData = JSON.parse(cleanJsonString);;
     } catch (error) {
       console.error("Invalid JSON from AI:", error);
     }
   }
 
   // Redirect if AI data is missing (e.g., after page refresh)
-  useEffect(() => {
-    if (!aiData) {
-      navigate("/Home"); // safe fallback
-    }
-  }, [aiData, navigate]);
+  // useEffect(() => {
+  //   if (!aiData) {
+  //     navigate("/Home"); // safe fallback
+  //   }
+  // }, [aiData, navigate]);
 
   if (!aiData) {
     return null; // nothing while redirecting
   }
+
+  if (!parsedData) {
+  return (
+    <div className="min-h-screen flex items-center justify-center text-center p-6">
+      <div>
+        <h2 className="text-2xl font-bold mb-3">⚠️ Invalid AI Response</h2>
+        <p className="mb-4">
+          The AI did not return valid structured JSON.
+        </p>
+        <button
+          onClick={() => navigate("/Home")}
+          className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded-xl"
+        >
+          Go Back
+        </button>
+      </div>
+    </div>
+  );
+}
+
 
   return (
     <div
@@ -68,7 +89,7 @@ function Result() {
               className="hidden md:flex items-center gap-3 px-4 py-2 rounded-xl"
             >
               <div className="text-sm font-medium text-gray-500">ATS Score</div>
-              <div className="text-xl font-extrabold">
+              <div className="text-xl border-2 border-black rounded-2xl flex justify-center items-center  w-15 h-10 font-extrabold">
                 {parsedData?.ats_score ?? "N/A"}
               </div>
             </div>
@@ -86,7 +107,7 @@ function Result() {
           >
             <p className="text-lg font-semibold mb-2">ATS Match Score</p>
             <h2 className="text-4xl md:text-5xl font-extrabold">
-              {parsedData?.ats_score ?? "N/A"}%
+              {parsedData?.ats_score ?? "N/A"}
             </h2>
             <p className="text-sm mt-2 opacity-90">
               Higher is better — aim for 80%+ for strong ATS compatibility

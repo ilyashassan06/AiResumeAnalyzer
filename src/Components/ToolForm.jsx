@@ -97,28 +97,64 @@ Return valid JSON only:
   "missing_keywords": [],
   "suggestions": []
 }`;
+  // {this method is commented because initally i used gemini api but now i am using puter.js}
+//     try {
 
-    try {
-      const response = await axios({
-        url: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyAMzCnJwQ6cDU7wGWXjRPfaDH2hnJDQTiM",
-        method: "POST",
-        data: {
-          contents: [{ parts: [{ text: prompt }] }],
-        },
-      });
+//       const response = await axios.post(
+//   "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent",
+//   {
+//     contents: [{ parts: [{ text: prompt }] }]
+//   },
+//   {
+//     headers: {
+//       "Content-Type": "application/json"
+//     },
+//     params: {
+//       key: "AIzaSyC6dIJvzFk1KEZWqXnly4YJ2DvEOeVux_k"
+//     }
+//   }
+// );
+//       // const response = await axios({
+//       //   url: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyAMzCnJwQ6cDU7wGWXjRPfaDH2hnJDQTiM",
+//       //   method: "POST",
+//       //   data: {
+//       //     contents: [{ parts: [{ text: prompt }] }],
+//       //   },
+//       // });
 
-      const text =
-        response?.data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+//       const text =
+//         response?.data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
 
-      setAiData(text);
+//       setAiData(text);
 
-      navigate("/Result", { state: { aiData: text } });
-    } catch (err) {
-      console.error("AI Error:", err);
-      alert("Unable to analyze. Try again.");
-    } finally {
-      setLoading(false);
-    }
+//       navigate("/Result", { state: { aiData: text } });
+//     } catch (err) {
+//       console.error("AI Error:", err);
+//       alert("Unable to analyze. Try again.");
+//     } finally {
+//       setLoading(false);
+//     }
+
+
+
+try {
+  const result = await window.puter.ai.chat(prompt);
+
+const aiText =
+  typeof result === "string"
+    ? result
+    : result?.message?.content;
+    
+
+setAiData(aiText);     // 🔥 THIS WAS MISSING
+  navigate("/Result");
+
+  } catch (error) {
+    console.error("AI Error:", error);
+  } finally {
+    setLoading(false);
+  }
+
   };
 
   return (
