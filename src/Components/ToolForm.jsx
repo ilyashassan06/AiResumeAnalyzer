@@ -179,55 +179,61 @@ Return ONLY valid JSON:
             </p>
           )}
         </label> */}
-        <label
-  className={`flex flex-col items-center justify-center w-full h-40 border-2 border-dashed rounded-2xl cursor-pointer transition-all duration-300
-    ${
-      theme === "light"
-        ? "border-gray-300 bg-gray-50 hover:bg-gray-100"
-        : "border-gray-600 bg-gray-800 hover:bg-gray-700"
-    }`}
->
-  <div className="flex flex-col items-center justify-center pt-5 pb-6">
-    <svg
-      className={`w-10 h-10 mb-3 ${
-        theme === "light" ? "text-gray-500" : "text-gray-400"
+       <div className="w-full">
+  <label
+    className={`flex flex-col items-center justify-center w-full h-40 border-2 border-dashed rounded-2xl cursor-pointer transition-all duration-300
+      ${
+        theme === "light"
+          ? "border-gray-300 bg-gray-50 hover:bg-gray-100"
+          : "border-gray-600 bg-gray-800 hover:bg-gray-700"
       }`}
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-      strokeWidth="2"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M7 16V8m0 0l-4 4m4-4l4 4m6 4v-8m0 0l-4 4m4-4l4 4"
-      />
-    </svg>
+  >
+    <div className="flex flex-col items-center justify-center pt-5 pb-6 text-center">
+      <svg
+        className={`w-10 h-10 mb-3 ${
+          theme === "light" ? "text-gray-500" : "text-gray-400"
+        }`}
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        strokeWidth="2"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M12 4v16m8-8H4"
+        />
+      </svg>
 
-    <p
-      className={`mb-2 text-sm ${
-        theme === "light" ? "text-gray-600" : "text-gray-300"
-      }`}
-    >
-      <span className="font-semibold">Click to upload</span> or drag & drop
-    </p>
+      {!fileName ? (
+        <>
+          <p className="text-sm font-semibold">
+            Click to upload or drag & drop
+          </p>
+          <p className="text-xs opacity-70">
+            PDF only (Max recommended 5MB)
+          </p>
+        </>
+      ) : (
+        <>
+          <p className="text-sm font-semibold text-green-500">
+            ✅ {fileName}
+          </p>
+          <p className="text-xs opacity-70">
+            File uploaded successfully
+          </p>
+        </>
+      )}
+    </div>
 
-    <p
-      className={`text-xs ${
-        theme === "light" ? "text-gray-500" : "text-gray-400"
-      }`}
-    >
-      PDF only (Max recommended 5MB)
-    </p>
-  </div>
-
-  <input
-    type="file"
-    accept="application/pdf"
-    onChange={handleFileUpload}
-    className="hidden"
-  />
-</label>
+    <input
+      type="file"
+      accept="application/pdf"
+      onChange={handleFileUpload}
+      className="hidden"
+    />
+  </label>
+</div>
 
         {/* Submit */}
         <button
