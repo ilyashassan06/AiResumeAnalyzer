@@ -8,53 +8,23 @@ function Result() {
   const navigate = useNavigate();
   const { theme } = useTheme();
 
-
-  // Clean the AI text before parsing
-  let parsedData = null;
-
-  if (aiData) {
-    const cleanJsonString = aiData
-      .replace(/```json/g, "")
-      .replace(/```/g, "")
-      .trim();
-
-    try {
-      parsedData = JSON.parse(cleanJsonString);;
-    } catch (error) {
-      console.error("Invalid JSON from AI:", error);
+  // Redirect if no AI data (like after refresh)
+  useEffect(() => {
+    if (!aiData) {
+      navigate("/Home");
     }
-  }
+  }, [aiData, navigate]);
 
-  // Redirect if AI data is missing (e.g., after page refresh)
-  // useEffect(() => {
-  //   if (!aiData) {
-  //     navigate("/Home"); // safe fallback
-  //   }
-  // }, [aiData, navigate]);
+  if (!aiData) return null;
 
-  if (!aiData) {
-    return null; // nothing while redirecting
-  }
-
-  if (!parsedData) {
-  return (
-    <div className="min-h-screen flex items-center justify-center text-center p-6">
-      <div>
-        <h2 className="text-2xl font-bold mb-3">⚠️ Invalid AI Response</h2>
-        <p className="mb-4">
-          The AI did not return valid structured JSON.
-        </p>
-        <button
-          onClick={() => navigate("/Home")}
-          className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded-xl"
-        >
-          Go Back
-        </button>
-      </div>
-    </div>
-  );
-}
-
+  // ✅ Use aiData directly (already parsed object from backend)
+  const {
+    ats_score = "N/A",
+    pros = [],
+    cons = [],
+    missing_keywords = [],
+    suggestions = []
+  } = aiData;
 
   return (
     <div
@@ -82,41 +52,28 @@ function Result() {
           >
             🧠 AI Resume Analysis Result
           </h1>
-
-          <div className="flex items-center gap-3">
-            {/* ATS score quick card (small) */}
-            <div
-              className="hidden md:flex items-center gap-3 px-4 py-2 rounded-xl"
-            >
-              <div className="text-sm font-medium text-gray-500">ATS Score</div>
-              <div className="text-xl border-2 border-black rounded-2xl flex justify-center items-center  w-15 h-10 font-extrabold">
-                {parsedData?.ats_score ?? "N/A"}
-              </div>
-            </div>
-          </div>
         </div>
 
-        {/* Main ATS Score Block */}
-        <div className="mb-6">
-          <div
-            className={
-              theme === "light"
-                ? "bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-2xl p-6 mb-6 shadow-md flex flex-col items-center justify-center"
-                : "bg-amber-500 text-gray-900 rounded-2xl p-6 mb-6 shadow-md flex flex-col items-center justify-center"
-            }
-          >
-            <p className="text-lg font-semibold mb-2">ATS Match Score</p>
-            <h2 className="text-4xl md:text-5xl font-extrabold">
-              {parsedData?.ats_score ?? "N/A"}
-            </h2>
-            <p className="text-sm mt-2 opacity-90">
-              Higher is better — aim for 80%+ for strong ATS compatibility
-            </p>
-          </div>
+        {/* ATS Score */}
+        <div
+          className={
+            theme === "light"
+              ? "bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-2xl p-6 mb-6 shadow-md text-center"
+              : "bg-amber-500 text-gray-900 rounded-2xl p-6 mb-6 shadow-md text-center"
+          }
+        >
+          <p className="text-lg font-semibold mb-2">ATS Match Score</p>
+          <h2 className="text-4xl md:text-5xl font-extrabold">
+            {ats_score}
+          </h2>
+          <p className="text-sm mt-2 opacity-90">
+            Higher is better — aim for 80%+ for strong ATS compatibility
+          </p>
         </div>
 
         {/* Pros & Cons */}
         <div className="grid md:grid-cols-2 gap-6 mb-6">
+          {/* Strengths */}
           <section
             className={
               theme === "light"
@@ -133,17 +90,30 @@ function Result() {
             >
               ✅ Strengths
             </h3>
-            <ul className="list-disc pl-5 space-y-2 text-gray-700">
-              {parsedData?.pros?.length
-                ? parsedData.pros.map((item, index) => (
-                    <li
-                    className={theme === "light" ? "text-gray-600" : "text-white"}
-                    key={index}>{item}</li>
-                  ))
-                : <li className={theme === "light" ? "text-gray-600" : "text-white"}>No strengths detected</li>}
+
+            <ul className="list-disc pl-5 space-y-2">
+              {pros.length ? (
+                pros.map((item, index) => (
+                  <li
+                    key={index}
+                    className={
+                      theme === "light"
+                        ? "text-gray-700"
+                        : "text-gray-200"
+                    }
+                  >
+                    {item}
+                  </li>
+                ))
+              ) : (
+                <li className={theme === "light" ? "text-gray-600" : "text-gray-300"}>
+                  No strengths detected
+                </li>
+              )}
             </ul>
           </section>
 
+          {/* Weaknesses */}
           <section
             className={
               theme === "light"
@@ -160,14 +130,26 @@ function Result() {
             >
               ⚠️ Weaknesses
             </h3>
-            <ul className="list-disc pl-5 space-y-2 text-gray-700">
-              {parsedData?.cons?.length
-                ? parsedData.cons.map((item, index) => (
-                    <li
-                    className={theme === "light" ? "text-gray-600" : "text-white"}
-                    key={index}>{item}</li>
-                  ))
-                : <li className={theme === "light" ? "text-gray-600" : "text-white"}>No weaknesses found</li>}
+
+            <ul className="list-disc pl-5 space-y-2">
+              {cons.length ? (
+                cons.map((item, index) => (
+                  <li
+                    key={index}
+                    className={
+                      theme === "light"
+                        ? "text-gray-700"
+                        : "text-gray-200"
+                    }
+                  >
+                    {item}
+                  </li>
+                ))
+              ) : (
+                <li className={theme === "light" ? "text-gray-600" : "text-gray-300"}>
+                  No weaknesses found
+                </li>
+              )}
             </ul>
           </section>
         </div>
@@ -189,9 +171,10 @@ function Result() {
           >
             🧩 Missing Keywords
           </h3>
+
           <div className="flex flex-wrap gap-3">
-            {parsedData?.missing_keywords?.length ? (
-              parsedData.missing_keywords.map((keyword, index) => (
+            {missing_keywords.length ? (
+              missing_keywords.map((keyword, index) => (
                 <span
                   key={index}
                   className={
@@ -204,7 +187,9 @@ function Result() {
                 </span>
               ))
             ) : (
-              <p className={theme === "light" ? "text-gray-600" : "text-gray-300"}>No missing keywords</p>
+              <p className={theme === "light" ? "text-gray-600" : "text-gray-300"}>
+                No missing keywords
+              </p>
             )}
           </div>
         </div>
@@ -226,50 +211,40 @@ function Result() {
           >
             💡 Suggestions
           </h3>
-          <ul className={theme === "light" ? "list-disc pl-5 space-y-2 text-gray-700" : "list-disc pl-5 space-y-2 text-gray-300"}>
-            {parsedData?.suggestions?.length
-              ? parsedData.suggestions.map((s, i) => <li key={i}>{s}</li>)
-              : <li className={theme === "light" ? "text-gray-600" : "text-gray-300"}>No suggestions available</li>}
+
+          <ul className="list-disc pl-5 space-y-2">
+            {suggestions.length ? (
+              suggestions.map((s, i) => <li key={i}>{s}</li>)
+            ) : (
+              <li className={theme === "light" ? "text-gray-600" : "text-gray-300"}>
+                No suggestions available
+              </li>
+            )}
           </ul>
         </div>
 
         {/* Actions */}
-        <div className="mt-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div>
-            <button
-              onClick={() => window.history.back()}
-              className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-xl font-semibold shadow-md transition-all"
-            >
-              🔙 Back to Tool
-            </button>
-          </div>
+        <div className="mt-8 flex justify-between items-center">
+          <button
+            onClick={() => window.history.back()}
+            className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-xl font-semibold shadow-md"
+          >
+            🔙 Back to Tool
+          </button>
 
-          <div className="flex items-center gap-3">
-            {/* Optionally add copy/export later; kept as placeholder area */}
-            <button
-  onClick={() => {
-    if (parsedData) {
-      try {
-        navigator.clipboard.writeText(JSON.stringify(parsedData, null, 2));
-        alert("Result JSON copied to clipboard");
-      } catch (err) {
-        console.error(err);
-        alert("Unable to copy");
-      }
-    }
-  }}
-  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200
-    ${
-      theme === "light"
-        ? "border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 shadow-sm"
-        : "border border-gray-600 bg-gray-800 text-gray-200 hover:bg-gray-700 shadow-sm"
-    }
-  `}
->
-  Copy JSON
-</button>
-
-          </div>
+          <button
+            onClick={() => {
+              navigator.clipboard.writeText(JSON.stringify(aiData, null, 2));
+              alert("Result JSON copied to clipboard");
+            }}
+            className={
+              theme === "light"
+                ? "border border-gray-300 bg-white text-gray-700 px-4 py-2 rounded-xl shadow-sm"
+                : "border border-gray-600 bg-gray-800 text-gray-200 px-4 py-2 rounded-xl shadow-sm"
+            }
+          >
+            Copy JSON
+          </button>
         </div>
       </div>
     </div>

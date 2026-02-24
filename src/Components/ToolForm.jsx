@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 import * as pdfjsLib from "https://unpkg.com/pdfjs-dist@4.3.136/build/pdf.mjs";
-import axios from "axios";
-import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../Context/firebaseConfig";
 import { useAi } from "../Context/AiResult";
 import { useTheme } from "../Context/ThemeContext";
 
@@ -22,9 +19,9 @@ const ToolForm = () => {
   const [fileName, setFileName] = useState("");
   const [loading, setLoading] = useState(false);
 
-  /** -----------------------
-   * FILE UPLOAD HANDLER
-   * ------------------------*/
+  const MAX_CHARS = 12000;
+
+  /* ---------------- FILE UPLOAD ---------------- */
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     setFileName(file?.name || "");
@@ -46,216 +43,148 @@ const ToolForm = () => {
         const pageText = content.items.map((it) => it.str).join(" ");
         text += pageText + "\n";
       }
-      setResumeText(text);
+
+      setResumeText(text.slice(0, MAX_CHARS));
     };
 
     reader.readAsArrayBuffer(file);
   };
-const MAX_CHARS = 12000; // safe
-const trimmedResume = resumeText.slice(0, MAX_CHARS);
-  /** -----------------------
-   * LOGOUT HANDLER
-   * ------------------------*/
+
+  /* ---------------- LOGOUT (Puter) ---------------- */
   const handleLogout = async () => {
     try {
-      await signOut(auth);
-      navigate("/Login");
+      await window.puter.auth.signOut();
+      navigate("/login");
     } catch (err) {
       console.error("Logout error:", err);
     }
   };
 
-  /** -----------------------
-   * SUBMIT HANDLER
-   * ------------------------*/
+  /* ---------------- SUBMIT (Puter Chat AI) ---------------- */
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!resumeText) {
+      alert("Please upload a resume first.");
+      return;
+    }
+
     setLoading(true);
 
     const prompt = `
-You are an AI Resume Analyzer. 
-Analyze this resume for the job role.make sure 
-to return ats score in percentage strictly
+You are an AI Resume Analyzer.
+
+Analyze the resume strictly for ATS compatibility.
+
+Return ATS score in percentage.
 
 ---
 
-Job Title: ${jobTitle}
+Job Title:
+${jobTitle}
 
 Job Description:
 ${jobDescription}
 
 Resume:
-${trimmedResume}
+${resumeText}
 
 ---
 
-Return valid JSON only:
+Return ONLY valid JSON:
 {
   "ats_score": "",
   "pros": [],
   "cons": [],
   "missing_keywords": [],
   "suggestions": []
-}`;
-  // {this method is commented because initally i used gemini api but now i am using puter.js}
-//     try {
+}
+`;
 
-//       const response = await axios.post(
-//   "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent",
-//   {
-//     contents: [{ parts: [{ text: prompt }] }]
-//   },
-//   {
-//     headers: {
-//       "Content-Type": "application/json"
-//     },
-//     params: {
-//       key: "AIzaSyC6dIJvzFk1KEZWqXnly4YJ2DvEOeVux_k"
-//     }
-//   }
-// );
-//       // const response = await axios({
-//       //   url: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyAMzCnJwQ6cDU7wGWXjRPfaDH2hnJDQTiM",
-//       //   method: "POST",
-//       //   data: {
-//       //     contents: [{ parts: [{ text: prompt }] }],
-//       //   },
-//       // });
+    try {
+      const response = await window.puter.ai.chat(prompt);
 
-//       const text =
-//         response?.data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      const text = response?.message?.content || response;
 
-//       setAiData(text);
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      const parsed = jsonMatch ? JSON.parse(jsonMatch[0]) : null;
 
-//       navigate("/Result", { state: { aiData: text } });
-//     } catch (err) {
-//       console.error("AI Error:", err);
-//       alert("Unable to analyze. Try again.");
-//     } finally {
-//       setLoading(false);
-//     }
+      if (!parsed) throw new Error("Invalid AI response");
 
-
-
-  try {
-    const response = await fetch("http://localhost:5000/analyze", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ prompt })
-    });
-    
-  const data = await response.json();   // 🔥 THIS WAS MISSING
-
-  const aiText = data.result;      
-setAiData(aiText);     // 🔥 THIS WAS MISSING
-  navigate("/Result");
-
-  } catch (error) {
-    console.error("AI Error:", error);
-  } finally {
-    setLoading(false);
-  }
-
+      setAiData(parsed);
+      navigate("/Result");
+    } catch (err) {
+      console.error("AI Error:", err);
+      alert("Unable to analyze. Try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="relative">
-      {/* FORM */}
       <form
         onSubmit={handleSubmit}
         className={`flex flex-col gap-6 ${
-          theme === "light"
-            ? "text-gray-800"
-            : "text-gray-100"
+          theme === "light" ? "text-gray-800" : "text-gray-100"
         }`}
       >
-        {/* Title */}
-        <h2
-          className={`text-2xl md:text-3xl font-bold text-center mb-4 ${
-            theme === "light" ? "text-gray-800" : "text-gray-100"
-          }`}
-        >
+        <h2 className="text-2xl md:text-3xl font-bold text-center mb-4">
           📄 Resume Upload & Job Details
         </h2>
 
         {/* Job Title */}
         <label className="flex flex-col gap-2">
-          <span
-            className={`font-semibold ${
-              theme === "light" ? "text-gray-700" : "text-gray-200"
-            }`}
-          >
-            Job Title
-          </span>
+          <span className="font-semibold">Job Title</span>
           <input
             type="text"
             value={jobTitle}
             onChange={(e) => setJobTitle(e.target.value)}
-            className={`w-full rounded-2xl p-3 focus:outline-none focus:ring-2 ${
+            className={`rounded-2xl p-3 focus:outline-none focus:ring-2 ${
               theme === "light"
-                ? "border border-gray-200 bg-gray-50 placeholder-gray-500 focus:ring-amber-300"
-                : "border border-gray-600 bg-gray-700 placeholder-gray-400 focus:ring-amber-400"
+                ? "border border-gray-200 bg-gray-50 focus:ring-amber-300"
+                : "border border-gray-600 bg-gray-700 focus:ring-amber-400"
             }`}
-            placeholder="Enter job title"
             required
           />
         </label>
 
         {/* Job Description */}
         <label className="flex flex-col gap-2">
-          <span
-            className={`font-semibold ${
-              theme === "light" ? "text-gray-700" : "text-gray-200"
-            }`}
-          >
-            Job Description
-          </span>
+          <span className="font-semibold">Job Description</span>
           <textarea
             value={jobDescription}
             onChange={(e) => setJobDescription(e.target.value)}
-            className={`w-full rounded-2xl p-3 h-28 resize-none focus:outline-none focus:ring-2 ${
+            className={`rounded-2xl p-3 h-28 resize-none focus:outline-none focus:ring-2 ${
               theme === "light"
-                ? "border border-gray-200 bg-gray-50 placeholder-gray-500 focus:ring-amber-300"
-                : "border border-gray-600 bg-gray-700 placeholder-gray-400 focus:ring-amber-400"
+                ? "border border-gray-200 bg-gray-50 focus:ring-amber-300"
+                : "border border-gray-600 bg-gray-700 focus:ring-amber-400"
             }`}
-            placeholder="Enter job description"
             required
           />
         </label>
 
-        {/* Resume Upload */}
+        {/* Upload Resume */}
         <label className="flex flex-col gap-2">
-          <span
-            className={`font-semibold ${
-              theme === "light" ? "text-gray-700" : "text-gray-200"
-            }`}
-          >
-            Upload Resume (PDF)
-          </span>
-
+          <span className="font-semibold">Upload Resume (PDF)</span>
           <input
             type="file"
             accept="application/pdf"
             onChange={handleFileUpload}
-            className={`block w-full text-sm file:py-2 file:px-4 file:rounded-2xl file:border ${
-              theme === "light"
-                ? "file:bg-gray-100 file:border-gray-200 hover:file:bg-gray-200"
-                : "file:bg-gray-700 file:border-gray-600 hover:file:bg-gray-600"
-            }`}
+            className="block w-full text-sm"
           />
-
           {fileName && (
-            <p className="text-sm text-green-600 mt-1">Uploaded: {fileName}</p>
+            <p className="text-sm text-green-600 mt-1">
+              Uploaded: {fileName}
+            </p>
           )}
         </label>
 
-        {/* Submit Button */}
+        {/* Submit */}
         <button
           type="submit"
           disabled={loading}
-          className={`w-full font-semibold py-3 rounded-2xl shadow-md transition-all duration-300 ${
+          className={`w-full font-semibold py-3 rounded-2xl transition-all ${
             theme === "light"
               ? "bg-amber-600 hover:bg-amber-700 text-white"
               : "bg-amber-500 hover:bg-amber-600 text-gray-900"
@@ -265,30 +194,15 @@ setAiData(aiText);     // 🔥 THIS WAS MISSING
         </button>
       </form>
 
-      {/* LOGOUT floating button */}
+      {/* Logout */}
       <button
         onClick={handleLogout}
-        className={`fixed bottom-6 left-6 z-50 px-5 py-2 rounded-2xl text-lg font-semibold flex items-center gap-2 shadow-lg transition-all duration-300
-        ${
+        className={`fixed bottom-6 left-6 px-5 py-2 rounded-2xl font-semibold shadow-lg ${
           theme === "light"
-            ? "bg-gradient-to-r from-amber-500 to-amber-700 text-white hover:scale-105"
-            : "bg-amber-500 text-gray-900 hover:scale-105"
+            ? "bg-amber-600 text-white"
+            : "bg-amber-500 text-gray-900"
         }`}
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth="2"
-          stroke="currentColor"
-          className="w-5 h-5"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M15.75 9V5.25A2.25 2.25 0 0013.5 3H6.75A2.25 2.25 0 004.5 5.25v13.5A2.25 2.25 0 006.75 21h6.75a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"
-          />
-        </svg>
         Logout
       </button>
     </div>

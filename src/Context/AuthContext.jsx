@@ -1,10 +1,6 @@
-// src/context/AuthContext.jsx
 import React, { createContext, useEffect, useState, useContext } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../Context/firebaseConfig";
 
 const AuthContext = createContext();
-
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
@@ -12,18 +8,28 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user);
-      setLoading(false);
-    });
+    const checkUser = async () => {
+      try {
+        if (!window.puter) {
+          setCurrentUser(null);
+          return;
+        }
 
-    return unsubscribe; // cleanup
+        const user = await window.puter.auth.getUser();
+        setCurrentUser(user || null);
+      } catch (error) {
+        // 401 means no user logged in — THIS IS NORMAL
+        setCurrentUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkUser();
   }, []);
 
-  const value = { currentUser };
-
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={{ currentUser }}>
       {!loading && children}
     </AuthContext.Provider>
   );
